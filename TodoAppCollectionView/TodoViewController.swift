@@ -21,6 +21,7 @@ class TodoViewController: UIViewController {
             titleTextField.text = todo.name
             datePicker.date = todo.deadline ?? Date()
         }
+        configureNavItem()
     }
 
     @IBAction func tappedSaveButton(_ sender: Any) {
