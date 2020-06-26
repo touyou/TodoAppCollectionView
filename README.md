@@ -5,8 +5,11 @@ Sample todo app with WWDC20 updates
 - use CollectionView with list style (< iOS 14)
 - use DiffableDataSource with CoreData (< iOS 13)
 - use DatePicker (above iOS14, you can use this with new skin)
+- use AccentColor (< iOS 14)
 
 ## Screenshot
+
+<small>! current version has different accent color, so this screenshot is different from what it currently looks like.</small>
 
 ### List screen
 | List | Edit Action| Delete Action|
