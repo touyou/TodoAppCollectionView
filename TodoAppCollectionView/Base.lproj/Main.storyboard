@@ -87,7 +87,7 @@
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" translatesAutoresizingMaskIntoConstraints="NO" id="Yfr-e1-VEF">
-                                <rect key="frame" x="0.0" y="209" width="414" height="216"/>
+                                <rect key="frame" x="20" y="209" width="374" height="216"/>
                             </datePicker>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Deadline" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I0A-OB-ycS">
                                 <rect key="frame" x="20" y="186" width="50" height="15"/>
@@ -104,10 +104,10 @@
                             <constraint firstItem="Yfr-e1-VEF" firstAttribute="top" secondItem="I0A-OB-ycS" secondAttribute="bottom" constant="8" id="bBb-VV-rX8"/>
                             <constraint firstItem="k4j-ht-N3W" firstAttribute="top" secondItem="Ey7-lI-fAG" secondAttribute="top" constant="32" id="bH6-hV-657"/>
                             <constraint firstItem="k4j-ht-N3W" firstAttribute="leading" secondItem="Ey7-lI-fAG" secondAttribute="leading" constant="20" id="d4Q-Iw-SUc"/>
-                            <constraint firstItem="Yfr-e1-VEF" firstAttribute="trailing" secondItem="Ey7-lI-fAG" secondAttribute="trailing" id="fsz-rk-c9s"/>
+                            <constraint firstItem="Yfr-e1-VEF" firstAttribute="trailing" secondItem="Ey7-lI-fAG" secondAttribute="trailing" constant="-20" id="fsz-rk-c9s"/>
                             <constraint firstItem="Ey7-lI-fAG" firstAttribute="trailing" secondItem="k4j-ht-N3W" secondAttribute="trailing" constant="20" id="hFN-z1-02U"/>
                             <constraint firstItem="I0A-OB-ycS" firstAttribute="leading" secondItem="Ey7-lI-fAG" secondAttribute="leading" constant="20" id="mU9-QC-0Px"/>
-                            <constraint firstItem="Yfr-e1-VEF" firstAttribute="leading" secondItem="Ey7-lI-fAG" secondAttribute="leading" id="wZU-8o-9X7"/>
+                            <constraint firstItem="Yfr-e1-VEF" firstAttribute="leading" secondItem="Ey7-lI-fAG" secondAttribute="leading" constant="20" id="wZU-8o-9X7"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="MfE-CN-DUE">
