@@ -37,4 +37,9 @@ class TodoViewController: UIViewController {
         })
         present(alert, animated: true, completion: nil)
     }
+
+    func configureNavItem() {
+        navigationItem.title = "Edit todo"
+        navigationItem.largeTitleDisplayMode = .always
+    }
 }
