@@ -50,7 +50,7 @@ class ViewController: UIViewController {
     }
     @IBOutlet weak var sortBarButton: UIBarButtonItem! {
         didSet {
-            let sortMenu = UIMenu(title: "Sort", children: getSortMenus(currentDescriptor))
+            let sortMenu = UIMenu(title: "Sort", children: getSortMenus())
             sortBarButton.menu = sortMenu
         }
     }
@@ -62,8 +62,14 @@ class ViewController: UIViewController {
         return _controller
     }()
 
+    var currentDescriptor: SortDescriptor = .deadline {
+        didSet {
+            let sortMenu = UIMenu(title: "Sort", children: getSortMenus())
+            sortBarButton.menu = sortMenu
+        }
+    }
+
     var dataSource: UICollectionViewDiffableDataSource<Section, Item>!
-    var currentDescriptor: SortDescriptor = .deadline
     private let todoSegueIdentifier = "todoSegue"
     let dataManager = DataManager.shared
 
@@ -100,22 +106,23 @@ class ViewController: UIViewController {
         fetchedResultsController.fetchRequest.sortDescriptors = [sortDescriptor]
         try? fetchedResultsController.performFetch()
         updateSnapshot()
-        sortBarButton.menu = UIMenu(title: "Sort", children: getSortMenus(descriptor))
     }
 
-    func getSortMenus(_ newDescriptor: SortDescriptor) -> [UIAction] {
-        currentDescriptor = newDescriptor
+    func getSortMenus() -> [UIAction] {
         return [
             UIAction(title: "Date", state: currentDescriptor == .deadline ? .on : .off) { [weak self] _ in
                 guard let self = self else { return }
+                self.currentDescriptor = .deadline
                 self.menuAction(.deadline)
             },
             UIAction(title: "Title", state: currentDescriptor == .title ? .on : .off) { [weak self] _ in
                 guard let self = self else { return }
+                self.currentDescriptor = .title
                 self.menuAction(.title)
             },
             UIAction(title: "Status", state: currentDescriptor == .done ? .on : .off) { [weak self] _ in
                 guard let self = self else { return }
+                self.currentDescriptor = .done
                 self.menuAction(.done)
             },
         ]
@@ -239,6 +246,10 @@ extension ViewController: UICollectionViewDelegate {
         let data = fetchedResultsController.object(at: indexPath)
         data.isDone.toggle()
         dataManager.saveContext()
+        if currentDescriptor == .done {
+            try? fetchedResultsController.performFetch()
+            updateSnapshot()
+        }
         collectionView.deselectItem(at: indexPath, animated: true)
     }
 }
