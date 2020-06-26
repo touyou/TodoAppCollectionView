@@ -35,6 +35,12 @@ class ViewController: UIViewController {
         private let identifier = UUID()
     }
 
+    enum SortDescriptor: String {
+        case deadline
+        case title = "name"
+        case done = "isDone"
+    }
+
     @IBOutlet weak var collectionView: UICollectionView! {
         didSet {
             collectionView.backgroundColor = .systemGroupedBackground
@@ -42,17 +48,24 @@ class ViewController: UIViewController {
             collectionView.delegate = self
         }
     }
-
-    var dataSource: UICollectionViewDiffableDataSource<Section, Item>!
-    private let todoSegueIdentifier = "todoSegue"
-    let dataManager = DataManager.shared
+    @IBOutlet weak var sortBarButton: UIBarButtonItem! {
+        didSet {
+            let sortMenu = UIMenu(title: "Sort", children: getSortMenus(currentDescriptor))
+            sortBarButton.menu = sortMenu
+        }
+    }
 
     lazy var fetchedResultsController: NSFetchedResultsController<Todo> = {
 
-        let _controller: NSFetchedResultsController<Todo> = dataManager.getFetchedResultController(with: ["deadline"])
+        let _controller: NSFetchedResultsController<Todo> = dataManager.getFetchedResultController(with: [currentDescriptor.rawValue])
         _controller.delegate = self
         return _controller
     }()
+
+    var dataSource: UICollectionViewDiffableDataSource<Section, Item>!
+    var currentDescriptor: SortDescriptor = .deadline
+    private let todoSegueIdentifier = "todoSegue"
+    let dataManager = DataManager.shared
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -80,6 +93,35 @@ class ViewController: UIViewController {
 
     @IBAction func tappedAddButton(_ sender: Any) {
         performSegue(withIdentifier: todoSegueIdentifier, sender: nil)
+    }
+
+    func menuAction(_ descriptor: SortDescriptor) {
+        let sortDescriptor = NSSortDescriptor(key: descriptor.rawValue, ascending: true)
+        fetchedResultsController.fetchRequest.sortDescriptors = [sortDescriptor]
+        try? fetchedResultsController.performFetch()
+        updateSnapshot()
+        let newMenuActions = getSortMenus(descriptor)
+        let newMenu = sortBarButton.menu?.replacingChildren(newMenuActions)
+        sortBarButton.menu = nil
+        sortBarButton.menu = newMenu
+    }
+
+    func getSortMenus(_ newDescriptor: SortDescriptor) -> [UIAction] {
+        currentDescriptor = newDescriptor
+        return [
+            UIAction(title: "Date", state: currentDescriptor == .deadline ? .on : .off) { [weak self] _ in
+                guard let self = self else { return }
+                self.menuAction(.deadline)
+            },
+            UIAction(title: "Title", state: currentDescriptor == .title ? .on : .off) { [weak self] _ in
+                guard let self = self else { return }
+                self.menuAction(.title)
+            },
+            UIAction(title: "Status", state: currentDescriptor == .done ? .on : .off) { [weak self] _ in
+                guard let self = self else { return }
+                self.menuAction(.done)
+            },
+        ]
     }
 }
 

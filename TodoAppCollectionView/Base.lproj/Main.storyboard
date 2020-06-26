@@ -38,6 +38,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="vaS-6H-A9I">
+                        <barButtonItem key="leftBarButtonItem" title="Sort" id="dJh-cY-sjm"/>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="Mcl-L0-sRQ">
                             <connections>
                                 <action selector="tappedAddButton:" destination="BYZ-38-t0r" id="0xK-ps-8Qi"/>
@@ -46,6 +47,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="xVY-HV-iZ0" id="XRS-IP-4UU"/>
+                        <outlet property="sortBarButton" destination="dJh-cY-sjm" id="JB6-SO-e57"/>
                         <segue destination="FJV-Ae-NUY" kind="show" identifier="todoSegue" id="CKb-KF-hfC"/>
                     </connections>
                 </viewController>
