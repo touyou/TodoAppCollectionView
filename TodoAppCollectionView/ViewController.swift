@@ -100,10 +100,7 @@ class ViewController: UIViewController {
         fetchedResultsController.fetchRequest.sortDescriptors = [sortDescriptor]
         try? fetchedResultsController.performFetch()
         updateSnapshot()
-        let newMenuActions = getSortMenus(descriptor)
-        let newMenu = sortBarButton.menu?.replacingChildren(newMenuActions)
-        sortBarButton.menu = nil
-        sortBarButton.menu = newMenu
+        sortBarButton.menu = UIMenu(title: "Sort", children: getSortMenus(descriptor))
     }
 
     func getSortMenus(_ newDescriptor: SortDescriptor) -> [UIAction] {
