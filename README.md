@@ -1,6 +1,6 @@
 # TodoAppCollectionView Sample
 
-Sample todo app for updates of WWDC20
+Sample todo app with WWDC20 updates
 
 - use CollectionView with list style (< iOS 14)
 - use DiffableDataSource with CoreData (< iOS 13)
