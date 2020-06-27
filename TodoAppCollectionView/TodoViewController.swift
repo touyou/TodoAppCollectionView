@@ -17,11 +17,8 @@ class TodoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        if let todo = todo {
-            titleTextField.text = todo.name
-            datePicker.date = todo.deadline ?? Date()
-        }
         configureNavItem()
+        configureUI()
     }
 
     @IBAction func tappedSaveButton(_ sender: Any) {
@@ -42,5 +39,13 @@ class TodoViewController: UIViewController {
     func configureNavItem() {
         navigationItem.title = "Edit todo"
         navigationItem.largeTitleDisplayMode = .always
+    }
+
+    func configureUI() {
+        if let todo = todo {
+            titleTextField.text = todo.name
+            datePicker.date = todo.deadline ?? Date()
+        }
+        titleTextField.becomeFirstResponder()
     }
 }
