@@ -10,7 +10,7 @@ Sample todo app with WWDC20 updates
 
 ## Screenshot
 
-<small>! current version has different accent color, so this screenshot is different from what it currently looks like.</small>
+*These screenshots don't reflect the state of the most recent commit, so there are some differences from what it looks like.*
 
 ### List screen
 | List | Edit Action| Delete Action|
@@ -28,3 +28,4 @@ Sample todo app with WWDC20 updates
 - [How to use CoreData by me](https://qiita.com/touyoubuntu/items/5133ba503da74bb39063)
 - [How to connect CoreData and DiffableDataSource by Julian](https://schiavo.me/2019/coredata-diffabledatasource/)
 - Some other developer documents by Apple
+- [Movie](https://twitter.com/touyou_dev/status/1276526396035092482)
