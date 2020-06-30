@@ -12,12 +12,23 @@ class ViewController: UIViewController {
 
     enum Section: Int, Hashable, CaseIterable {
         case main
+        case outline
     }
 
     struct Item: Hashable {
         let name: String?
         let deadline: String?
         let isDone: Bool
+
+        let hasChildren: Bool
+
+        init(_ name: String, hasChildren: Bool = false) {
+            self.name = name
+            self.hasChildren = hasChildren
+
+            self.isDone = false
+            self.deadline = nil
+        }
 
         init(_ todo: Todo) {
             self.name = todo.name
@@ -30,6 +41,7 @@ class ViewController: UIViewController {
             } else {
                 self.deadline = nil
             }
+            self.hasChildren = false
         }
 
         private let identifier = UUID()
@@ -141,6 +153,10 @@ extension ViewController {
 
             if sectionKind == .main {
                 return NSCollectionLayoutSection.list(using: .init(appearance: .insetGrouped), layoutEnvironment: layoutEnvironment)
+            } else if sectionKind == .outline {
+                let section = NSCollectionLayoutSection.list(using: .init(appearance: .sidebar), layoutEnvironment: layoutEnvironment)
+                section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 0, trailing: 10)
+                return section
             } else {
                 fatalError("Unknown section")
             }
@@ -217,23 +233,68 @@ extension ViewController {
         }
     }
 
+    func configuredOutlineHeaderCell() -> UICollectionView.CellRegistration<UICollectionViewListCell, String> {
+        return UICollectionView.CellRegistration<UICollectionViewListCell, String> { (cell, indexPath, title) in
+            var content = cell.defaultContentConfiguration()
+            content.text = title
+            cell.contentConfiguration = content
+            cell.accessories = [.outlineDisclosure(options: .init(style: .header))]
+        }
+    }
+
+    func configuredOutlineCell() -> UICollectionView.CellRegistration<UICollectionViewListCell, Item> {
+        return UICollectionView.CellRegistration<UICollectionViewListCell, Item> { [weak self] (cell, indexPath, item) in
+            guard let self = self else { return }
+            var content = UIListContentConfiguration.valueCell()
+            content.text = item.name
+            content.secondaryText = item.deadline
+            cell.contentConfiguration = content
+            cell.accessories = self.accessoriesForListCellItem(item)
+        }
+    }
+
     func configureDataSource() {
         dataSource = UICollectionViewDiffableDataSource<Section, Item>(collectionView: collectionView) { (collectionView, indexPath, item) -> UICollectionViewCell? in
-            guard let _ = Section(rawValue: indexPath.section) else {
+            guard let section = Section(rawValue: indexPath.section) else {
                 fatalError("Unknown section")
             }
-
-            return collectionView.dequeueConfiguredReusableCell(using: self.configuredListCell(), for: indexPath, item: item)
+            switch section {
+            case .main:
+                return collectionView.dequeueConfiguredReusableCell(using: self.configuredListCell(), for: indexPath, item: item)
+            case .outline:
+                if item.hasChildren {
+                    return collectionView.dequeueConfiguredReusableCell(using: self.configuredOutlineHeaderCell(), for: indexPath, item: item.name)
+                } else {
+                    return collectionView.dequeueConfiguredReusableCell(using: self.configuredOutlineCell(), for: indexPath, item: item)
+                }
+            }
         }
     }
 
     func updateSnapshot() {
         let sections = Section.allCases
-        let items = (fetchedResultsController.fetchedObjects ?? []).map { Item($0) }
+        let fetchObjects = fetchedResultsController.fetchedObjects ?? []
         var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
         snapshot.appendSections(sections)
-        snapshot.appendItems(items)
-        dataSource.apply(snapshot, animatingDifferences: true)
+        dataSource.apply(snapshot, animatingDifferences: false)
+
+        var allSnapshot = NSDiffableDataSourceSectionSnapshot<Item>()
+        var outlineSnapshot = NSDiffableDataSourceSectionSnapshot<Item>()
+
+        let items = fetchObjects.map { Item($0) }
+        allSnapshot.append(items)
+
+        let undoneRoot = Item("Undone", hasChildren: true)
+        let doneRoot = Item("Done", hasChildren: true)
+        outlineSnapshot.append([undoneRoot, doneRoot])
+        let outlineItems = fetchObjects.map { Item($0) }
+        let undoneItems = outlineItems.filter { !$0.isDone }
+        let doneItems = outlineItems.filter { $0.isDone }
+        outlineSnapshot.append(undoneItems, to: undoneRoot)
+        outlineSnapshot.append(doneItems, to: doneRoot)
+
+        dataSource.apply(allSnapshot, to: .main, animatingDifferences: false)
+        dataSource.apply(outlineSnapshot, to: .outline, animatingDifferences: false)
     }
 }
 
